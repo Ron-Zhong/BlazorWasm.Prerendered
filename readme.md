@@ -4,6 +4,6 @@
 **Does .NET 6 fix Blazor Prerendering?**
 * https://jonhilton.net/blazor-prerendering-net6/
 
-In WebAssemblyPrerender mode, by switching off _<script src="_framework/blazor.webassembly.js"></script>_ for SEO crawlers.
+使用 WebAssemblyPrerender, 在crawling mode下，關閉 _<script src="_framework/blazor.webassembly.js"></script>跑分還算不錯！
 ![image](https://user-images.githubusercontent.com/43414651/146706101-2f3d6b93-4645-4224-ad46-2b7b347d2fbb.png)
 => The FCP/LCP scores can be quite impressive.
