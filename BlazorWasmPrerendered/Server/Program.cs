@@ -6,6 +6,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages();
+builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri("https://localhost:7190") });
 
 var app = builder.Build();
 
