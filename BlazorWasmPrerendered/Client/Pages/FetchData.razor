@@ -1,6 +1,7 @@
 ﻿@page "/fetchdata"
 @using BlazorWasmPrerendered.Shared
 @inject HttpClient Http
+@inject PersistentComponentState ApplicationState
 
 <PageTitle>Weather forecast</PageTitle>
 
@@ -27,7 +28,7 @@ else
             @foreach (var forecast in forecasts)
             {
                 <tr>
-                    <td>@forecast.Date.ToShortDateString()</td>
+                    <td>@forecast.Date.ToString("yyyy-MMM-dd")</td>
                     <td>@forecast.TemperatureC</td>
                     <td>@forecast.TemperatureF</td>
                     <td>@forecast.Summary</td>
@@ -39,9 +40,26 @@ else
 
 @code {
     private WeatherForecast[]? forecasts;
+    private PersistingComponentStateSubscription _subscription;
 
     protected override async Task OnInitializedAsync()
     {
-        forecasts = await Http.GetFromJsonAsync<WeatherForecast[]>("WeatherForecast");
+        _subscription = ApplicationState.RegisterOnPersisting(PersistForecasts);
+
+        if (ApplicationState.TryTakeFromJson<WeatherForecast[]>("fetchData", out var stored))
+            forecasts = stored;
+        else
+            forecasts = await Http.GetFromJsonAsync<WeatherForecast[]>("WeatherForecast");
+    }
+
+    private Task PersistForecasts()
+    {
+        ApplicationState.PersistAsJson("fetchData", forecasts);
+        return Task.CompletedTask;
+    }
+
+    public void Dispose()
+    {
+        _subscription.Dispose();
     }
 }
